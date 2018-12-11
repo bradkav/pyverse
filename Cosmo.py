@@ -39,12 +39,12 @@ def Hubble(z):
     
     Parameters
     ----------
-    z : float
+    * `z`  [float]:
         Redshift
     
     Returns
     -------
-    float
+    * `H0` [float]:
         Hubble parameter in (km/s)/Mpc
     """
     
@@ -57,12 +57,12 @@ def Hubble_peryr(z):
     
     Parameters
     ----------
-    z : float
+    * `z`  [float]:
         Redshift
     
     Returns
     -------
-    float
+    * `H0` [float]:
         Hubble parameter in 1/yr
     """
     
@@ -75,12 +75,12 @@ def t_univ(z):
     
     Parameters
     ----------
-    z : float
+    * `z` [float]:
         Redshift
     
     Returns
     -------
-    float
+    * `t` [float]:
         Time from Big Bang (in years)
     
     """
@@ -95,12 +95,12 @@ def R_horizon(z):
     
     Parameters
     ----------
-    z : float
+    * `z` [float]:
         Redshift
     
     Returns
     -------
-    float
+    * `R_H` [float]:
         Horizon size (in Mpc)
     
     """
