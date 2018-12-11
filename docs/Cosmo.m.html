@@ -1049,6 +1049,7 @@ table {
     <li class="mono"><a href="#Cosmo.Omega_m">Omega_m</a></li>
     <li class="mono"><a href="#Cosmo.Omega_r">Omega_r</a></li>
     <li class="mono"><a href="#Cosmo.c">c</a></li>
+    <li class="mono"><a href="#Cosmo.rho_crit">rho_crit</a></li>
   </ul>
 
     </li>
@@ -1058,7 +1059,9 @@ table {
   <ul>
     <li class="mono"><a href="#Cosmo.Hubble">Hubble</a></li>
     <li class="mono"><a href="#Cosmo.Hubble_peryr">Hubble_peryr</a></li>
+    <li class="mono"><a href="#Cosmo.M_horizon">M_horizon</a></li>
     <li class="mono"><a href="#Cosmo.R_horizon">R_horizon</a></li>
+    <li class="mono"><a href="#Cosmo.rho">rho</a></li>
     <li class="mono"><a href="#Cosmo.t_univ">t_univ</a></li>
   </ul>
 
@@ -1108,6 +1111,8 @@ table {
 <span class="c1">#(km/Mpc) = 3.24e-20</span>
 <span class="n">H0</span> <span class="o">=</span> <span class="mf">67.8</span> <span class="c1">#(km/s)/Mpc</span>
 <span class="n">H0_peryr</span> <span class="o">=</span> <span class="n">H0</span><span class="o">*</span><span class="p">(</span><span class="mf">3.24e-20</span><span class="p">)</span><span class="o">*</span><span class="p">(</span><span class="mi">60</span><span class="o">*</span><span class="mi">60</span><span class="o">*</span><span class="mi">24</span><span class="o">*</span><span class="mi">365</span><span class="p">)</span> <span class="c1">#1/yr</span>
+
+<span class="n">rho_crit</span> <span class="o">=</span> <span class="mf">4.87235e-6</span><span class="o">/</span><span class="mf">37.96</span> <span class="c1">#M_sun pc^-3</span>
 
 <span class="n">Omega_L</span> <span class="o">=</span> <span class="mf">0.692</span>
 <span class="n">Omega_m</span> <span class="o">=</span> <span class="mf">0.308</span>
@@ -1171,10 +1176,28 @@ table {
     <span class="n">integ</span> <span class="o">=</span> <span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="mf">1.0</span><span class="o">/</span><span class="p">((</span><span class="mi">1</span><span class="o">+</span><span class="n">x</span><span class="p">)</span><span class="o">*</span><span class="n">Hubble_peryr</span><span class="p">(</span><span class="n">x</span><span class="p">))</span>
     <span class="k">return</span> <span class="n">quad</span><span class="p">(</span><span class="n">integ</span><span class="p">,</span> <span class="n">z</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">inf</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
     
-<span class="c1">#Calculate horizon size as a function of redshift (in Mpc)</span>
+<span class="k">def</span> <span class="nf">rho</span><span class="p">(</span><span class="n">z</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Total density of the universe as a function of redshift.</span>
+<span class="sd">    </span>
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    * `z` [float]:</span>
+<span class="sd">        Redshift</span>
+<span class="sd">    </span>
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    * `rho` [float]:</span>
+<span class="sd">        Total density (in M_sun pc^-3)</span>
+<span class="sd">    </span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    
+    <span class="k">return</span> <span class="n">rho_crit</span><span class="o">*</span><span class="p">(</span><span class="n">Hubble</span><span class="p">(</span><span class="n">z</span><span class="p">)</span><span class="o">**</span><span class="mi">2</span><span class="o">/</span><span class="n">H0</span><span class="o">**</span><span class="mi">2</span><span class="p">)</span>
+    
+    
 <span class="k">def</span> <span class="nf">R_horizon</span><span class="p">(</span><span class="n">z</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Calculate horizon size.</span>
+<span class="sd">    Calculate the size of the comoving Hubble horizon, $R_H = 1/ a H$, in Mpc.</span>
 <span class="sd">    </span>
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
@@ -1190,6 +1213,27 @@ table {
     
     <span class="n">a</span> <span class="o">=</span> <span class="mf">1.</span><span class="o">/</span><span class="p">(</span><span class="mf">1.</span><span class="o">+</span><span class="n">z</span><span class="p">)</span>
     <span class="k">return</span> <span class="p">(</span><span class="n">c</span><span class="o">*</span><span class="mf">1e-3</span><span class="p">)</span><span class="o">/</span><span class="p">(</span><span class="n">a</span><span class="o">*</span><span class="n">Hubble</span><span class="p">(</span><span class="n">z</span><span class="p">))</span>
+    
+
+<span class="k">def</span> <span class="nf">M_horizon</span><span class="p">(</span><span class="n">z</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Calculate horizon mass (in M_sun) at a given redshift.</span>
+<span class="sd">    </span>
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    * `z` [float]:</span>
+<span class="sd">        Redshift</span>
+<span class="sd">    </span>
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    * `M_H` [float]:</span>
+<span class="sd">        Horizon mass (in M_sun)</span>
+<span class="sd">    </span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="c1">#Note that we need to convert to comoving R_H -&gt; physical R_H</span>
+    <span class="k">return</span> <span class="p">(</span><span class="mi">4</span><span class="o">*</span><span class="n">np</span><span class="o">.</span><span class="n">pi</span><span class="o">/</span><span class="mi">3</span><span class="p">)</span><span class="o">*</span><span class="n">rho</span><span class="p">(</span><span class="n">z</span><span class="p">)</span><span class="o">*</span><span class="p">(</span><span class="mf">1e6</span><span class="o">*</span><span class="n">R_horizon</span><span class="p">(</span><span class="n">z</span><span class="p">)</span><span class="o">/</span><span class="p">(</span><span class="mf">1.</span><span class="o">+</span><span class="n">z</span><span class="p">))</span><span class="o">**</span><span class="mi">3</span>
+    
 </pre></div>
 
   </div>
@@ -1240,6 +1284,14 @@ table {
       </div>
       <div class="item">
       <p id="Cosmo.c" class="name">var <span class="ident">c</span></p>
+      
+  
+  <div class="source_cont">
+</div>
+
+      </div>
+      <div class="item">
+      <p id="Cosmo.rho_crit" class="name">var <span class="ident">rho_crit</span></p>
       
   
   <div class="source_cont">
@@ -1342,6 +1394,54 @@ table {
   
       
   <div class="item">
+    <div class="name def" id="Cosmo.M_horizon">
+    <p>def <span class="ident">M_horizon</span>(</p><p>z)</p>
+    </div>
+    
+
+    
+  
+    <div class="desc"><p>Calculate horizon mass (in M_sun) at a given redshift.</p>
+<h2>Parameters</h2>
+<ul>
+<li><code>z</code> [float]:
+    Redshift</li>
+</ul>
+<h2>Returns</h2>
+<ul>
+<li><code>M_H</code> [float]:
+    Horizon mass (in M_sun)</li>
+</ul></div>
+  <div class="source_cont">
+  <p class="source_link"><a href="javascript:void(0);" onclick="toggle('source-Cosmo.M_horizon', this);">Show source &equiv;</a></p>
+  <div id="source-Cosmo.M_horizon" class="source">
+    <div class="codehilite"><pre><span></span><span class="k">def</span> <span class="nf">M_horizon</span><span class="p">(</span><span class="n">z</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Calculate horizon mass (in M_sun) at a given redshift.</span>
+<span class="sd">    </span>
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    * `z` [float]:</span>
+<span class="sd">        Redshift</span>
+<span class="sd">    </span>
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    * `M_H` [float]:</span>
+<span class="sd">        Horizon mass (in M_sun)</span>
+<span class="sd">    </span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="c1">#Note that we need to convert to comoving R_H -&gt; physical R_H</span>
+    <span class="k">return</span> <span class="p">(</span><span class="mi">4</span><span class="o">*</span><span class="n">np</span><span class="o">.</span><span class="n">pi</span><span class="o">/</span><span class="mi">3</span><span class="p">)</span><span class="o">*</span><span class="n">rho</span><span class="p">(</span><span class="n">z</span><span class="p">)</span><span class="o">*</span><span class="p">(</span><span class="mf">1e6</span><span class="o">*</span><span class="n">R_horizon</span><span class="p">(</span><span class="n">z</span><span class="p">)</span><span class="o">/</span><span class="p">(</span><span class="mf">1.</span><span class="o">+</span><span class="n">z</span><span class="p">))</span><span class="o">**</span><span class="mi">3</span>
+</pre></div>
+
+  </div>
+</div>
+
+  </div>
+  
+      
+  <div class="item">
     <div class="name def" id="Cosmo.R_horizon">
     <p>def <span class="ident">R_horizon</span>(</p><p>z)</p>
     </div>
@@ -1349,7 +1449,7 @@ table {
 
     
   
-    <div class="desc"><p>Calculate horizon size.</p>
+    <div class="desc"><p>Calculate the size of the comoving Hubble horizon, $R_H = 1/ a H$, in Mpc.</p>
 <h2>Parameters</h2>
 <ul>
 <li><code>z</code> [float]:
@@ -1365,7 +1465,7 @@ table {
   <div id="source-Cosmo.R_horizon" class="source">
     <div class="codehilite"><pre><span></span><span class="k">def</span> <span class="nf">R_horizon</span><span class="p">(</span><span class="n">z</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Calculate horizon size.</span>
+<span class="sd">    Calculate the size of the comoving Hubble horizon, $R_H = 1/ a H$, in Mpc.</span>
 <span class="sd">    </span>
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
@@ -1381,6 +1481,53 @@ table {
     
     <span class="n">a</span> <span class="o">=</span> <span class="mf">1.</span><span class="o">/</span><span class="p">(</span><span class="mf">1.</span><span class="o">+</span><span class="n">z</span><span class="p">)</span>
     <span class="k">return</span> <span class="p">(</span><span class="n">c</span><span class="o">*</span><span class="mf">1e-3</span><span class="p">)</span><span class="o">/</span><span class="p">(</span><span class="n">a</span><span class="o">*</span><span class="n">Hubble</span><span class="p">(</span><span class="n">z</span><span class="p">))</span>
+</pre></div>
+
+  </div>
+</div>
+
+  </div>
+  
+      
+  <div class="item">
+    <div class="name def" id="Cosmo.rho">
+    <p>def <span class="ident">rho</span>(</p><p>z)</p>
+    </div>
+    
+
+    
+  
+    <div class="desc"><p>Total density of the universe as a function of redshift.</p>
+<h2>Parameters</h2>
+<ul>
+<li><code>z</code> [float]:
+    Redshift</li>
+</ul>
+<h2>Returns</h2>
+<ul>
+<li><code>rho</code> [float]:
+    Total density (in M_sun pc^-3)</li>
+</ul></div>
+  <div class="source_cont">
+  <p class="source_link"><a href="javascript:void(0);" onclick="toggle('source-Cosmo.rho', this);">Show source &equiv;</a></p>
+  <div id="source-Cosmo.rho" class="source">
+    <div class="codehilite"><pre><span></span><span class="k">def</span> <span class="nf">rho</span><span class="p">(</span><span class="n">z</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Total density of the universe as a function of redshift.</span>
+<span class="sd">    </span>
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    * `z` [float]:</span>
+<span class="sd">        Redshift</span>
+<span class="sd">    </span>
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    * `rho` [float]:</span>
+<span class="sd">        Total density (in M_sun pc^-3)</span>
+<span class="sd">    </span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    
+    <span class="k">return</span> <span class="n">rho_crit</span><span class="o">*</span><span class="p">(</span><span class="n">Hubble</span><span class="p">(</span><span class="n">z</span><span class="p">)</span><span class="o">**</span><span class="mi">2</span><span class="o">/</span><span class="n">H0</span><span class="o">**</span><span class="mi">2</span><span class="p">)</span>
 </pre></div>
 
   </div>

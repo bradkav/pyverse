@@ -26,6 +26,8 @@ in a flat universe. We use the Planck 2015 values from [arXiv:1502.01589](https:
 H0 = 67.8 #(km/s)/Mpc
 H0_peryr = H0*(3.24e-20)*(60*60*24*365) #1/yr
 
+rho_crit = 4.87235e-6/37.96 #M_sun pc^-3
+
 Omega_L = 0.692
 Omega_m = 0.308
 Omega_r = 9.24e-5
@@ -88,10 +90,28 @@ def t_univ(z):
     integ = lambda x: 1.0/((1+x)*Hubble_peryr(x))
     return quad(integ, z, np.inf)[0]
     
-#Calculate horizon size as a function of redshift (in Mpc)
+def rho(z):
+    """
+    Total density of the universe as a function of redshift.
+    
+    Parameters
+    ----------
+    * `z` [float]:
+        Redshift
+    
+    Returns
+    -------
+    * `rho` [float]:
+        Total density (in M_sun pc^-3)
+    
+    """
+    
+    return rho_crit*(Hubble(z)**2/H0**2)
+    
+    
 def R_horizon(z):
     """
-    Calculate horizon size.
+    Calculate the size of the comoving Hubble horizon, $R_H = 1/ a H$, in Mpc.
     
     Parameters
     ----------
@@ -107,3 +127,24 @@ def R_horizon(z):
     
     a = 1./(1.+z)
     return (c*1e-3)/(a*Hubble(z))
+    
+
+def M_horizon(z):
+    """
+    Calculate horizon mass (in M_sun) at a given redshift.
+    
+    Parameters
+    ----------
+    * `z` [float]:
+        Redshift
+    
+    Returns
+    -------
+    * `M_H` [float]:
+        Horizon mass (in M_sun)
+    
+    """
+
+    #Note that we need to convert to comoving R_H -> physical R_H
+    return (4*np.pi/3)*rho(z)*(1e6*R_horizon(z)/(1.+z))**3
+    
