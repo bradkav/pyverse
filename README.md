@@ -1,8 +1,4 @@
+# pyverse
 
+[Documentation](http://bradkav.net/pyverse/)
 
-### Cosmo.py
-
-
-```python
-Hubble(z)
-```
