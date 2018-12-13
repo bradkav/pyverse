@@ -32,7 +32,7 @@ Omega_L = 0.692
 Omega_m = 0.308
 Omega_r = 9.24e-5
 
-c = 3e8 #m/s
+c = 3e5 #km/s
 
 
 def Hubble(z):
@@ -50,7 +50,7 @@ def Hubble(z):
         Hubble parameter in (km/s)/Mpc
     """
     
-    return H0*np.sqrt(Omega_L + Omega_m*(1+z)**3 + Omega_r*(1+z**4))
+    return H0*np.sqrt(Omega_L + Omega_m*(1+z)**3 + Omega_r*(1+z)**4)
  
 
 def Hubble_peryr(z):
@@ -90,7 +90,7 @@ def t_univ(z):
     integ = lambda x: 1.0/((1+x)*Hubble_peryr(x))
     return quad(integ, z, np.inf)[0]
     
-def rho(z):
+def rho_tot(z):
     """
     Total density of the universe as a function of redshift.
     
@@ -101,7 +101,7 @@ def rho(z):
     
     Returns
     -------
-    * `rho` [float]:
+    * `rho_tot` [float]:
         Total density (in M_sun pc^-3)
     
     """
@@ -126,7 +126,7 @@ def R_horizon(z):
     """
     
     a = 1./(1.+z)
-    return (c*1e-3)/(a*Hubble(z))
+    return c/(a*Hubble(z))
     
 
 def M_horizon(z):
@@ -145,6 +145,6 @@ def M_horizon(z):
     
     """
 
-    #Note that we need to convert to comoving R_H -> physical R_H
-    return (4*np.pi/3)*rho(z)*(1e6*R_horizon(z)/(1.+z))**3
+    #Note that we need to convert comoving R_H -> physical R_H
+    return (4*np.pi/3)*rho_tot(z)*(1e6*R_horizon(z)/(1.+z))**3
     
