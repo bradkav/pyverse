@@ -6,7 +6,7 @@ H0 = 2.195e-18 * (365 * 24 * 60**2)  # yr^-1
 Gn = 4.52e-30 * (365 * 24 * 60**2)  # pc^3 / (M_sun yr^2)
 rho_c = 1.26e-7  # critical density, M_sun / pc^3
 z_eq = 3e3
-speed_of_light = 3.064e-4  # kpc/yr
+speed_of_light = 3.064e-1  # pc/yr
 a_0 = 1.
 
 # Present-day densities

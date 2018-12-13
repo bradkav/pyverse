@@ -3,7 +3,7 @@ from scipy.integrate import quad
 from scipy.special import erfc
 
 from cosmology import Omega_cdm_0, window_gaussian, m_hor, m_hor_cdm
-from cosmology import r_hor_phys, rho_c, a_0
+from cosmology import r_hor_phys, rho_c, a_0, rho_tot, Omega_cdm
 
 
 """
@@ -95,8 +95,8 @@ def mass_fn_pbh_simple(a_i, beta, a=a_0, gamma=1/3**1.5):
     """
     m_pbh_i = m_pbh_i_simple(a_i, gamma)
     m_pbh = evolve_m_pbh(m_pbh_i, a_i, a)
-    # Compute present-day differential abundance by redshifting the initial
-    # abundance.
-    m_c = 4*np.pi/3 * r_hor_phys(a_i)**3 * rho_c
-    dOmega_pbh_dm = m_pbh / m_c * beta(a_i) * (a_i / a)**3
-    return m_pbh_i, m_pbh, dOmega_pbh_dm / Omega_cdm_0
+    m_hor_i = 4*np.pi/3 * r_hor_phys(a_i)**3 * rho_tot(a_i)
+    dOmega_pbh_dm = m_pbh / m_hor_i * beta(a_i)
+    # Redshift factors to account for volume scaling
+    dOmega_pbh_dm *= (a_i / a)**3 * rho_tot(a_i) / rho_tot(a)
+    return m_pbh_i, m_pbh, dOmega_pbh_dm * Omega_cdm_0

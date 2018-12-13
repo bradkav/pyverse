@@ -3,7 +3,7 @@ from scipy.integrate import quad
 from scipy.special import erfc
 
 from cosmology import Omega_cdm_0, window_gaussian, m_hor, m_hor_cdm
-from cosmology import r_hor_phys, rho_c, a_of_z, a_0
+from cosmology import r_hor_phys, rho_c, a_of_z, a_0, rho_tot
 
 
 def pr_ucmh_collapse(sigma, delta_min=1e-3, delta_max=1/4):
@@ -111,10 +111,10 @@ def mass_fn_ucmh_simple(a_i, beta, a=a_0, Omega_cdm_bc=Omega_cdm_0, a_bc=a_0):
         Initial UCMH mass, present-day UCMH mass, corresponding differential
         density fraction normalized to total present DM abundance.
     """
-    m_ucmh_i = m_ucmh_i_simple(a_i, Omega_cdm_bc, a_bc)
-    m_ucmh = evolve_m_ucmh(m_ucmh_i, a_i, a)
-    # Compute present-day differential abundance by redshifting the initial
-    # abundance.
-    m_c = 4*np.pi/3 * r_hor_phys(a_i)**3 * rho_c
-    dOmega_ucmh_dm = m_ucmh / m_c * beta(a_i) * (a_i / a)**3
+    m_pbh_i = m_pbh_i_simple(a_i, gamma)
+    m_pbh = evolve_m_pbh(m_pbh_i, a_i, a)
+    m_hor_i = 4*np.pi/3 * r_hor_phys(a_i)**3 * rho_tot(a_i)
+    dOmega_pbh_dm = m_pbh / m_hor_i * beta(a_i)
+    # Redshift factors to account for volume scaling
+    dOmega_pbh_dm *= (a_i / a)**3 * rho_tot(a_i) / rho_tot(a)
     return m_ucmh_i, m_ucmh, dOmega_ucmh_dm / Omega_cdm_0
