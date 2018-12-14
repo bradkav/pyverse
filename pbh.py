@@ -22,7 +22,9 @@ def pr_pbh_collapse(sigma, delta_c=1/3):
 
     Notes
     -----
-    Assumes Gaussian fluctuations.
+    * Assumes Gaussian fluctuations.
+    * Need to check whether properly normalizing the fluctuation PDF has any
+      impact.
 
     Parameters
     ----------
@@ -31,8 +33,7 @@ def pr_pbh_collapse(sigma, delta_c=1/3):
     delta_c : float
         Overdensity threshold for collapse.
     """
-    # Factor of two since delta >= 0. TODO: double-check this!
-    return erfc(delta_c / (np.sqrt(2) * sigma))
+    return 0.5 * erfc(delta_c / (np.sqrt(2) * sigma))
 
 
 def m_pbh_i_simple(a_i, gamma=(1./3)**1.5):

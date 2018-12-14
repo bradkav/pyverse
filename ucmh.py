@@ -28,8 +28,8 @@ def pr_ucmh_collapse(sigma, delta_min=1e-3, delta_max=1/4):
     float
     """
     # Factor of two since delta >= 0. TODO: double-check this!
-    return (erfc(delta_min / (np.sqrt(2) * sigma)) -
-            erfc(delta_max / (np.sqrt(2) * sigma)))
+    return 0.5 * (erfc(delta_min / (np.sqrt(2) * sigma)) -
+                  erfc(delta_max / (np.sqrt(2) * sigma)))
 
 
 def m_ucmh_i_simple(a_i, Omega_cdm_bc=Omega_cdm_0, a_bc=a_0):
@@ -111,10 +111,10 @@ def mass_fn_ucmh_simple(a_i, beta, a=a_0, Omega_cdm_bc=Omega_cdm_0, a_bc=a_0):
         Initial UCMH mass, present-day UCMH mass, corresponding differential
         density fraction normalized to total present DM abundance.
     """
-    m_pbh_i = m_pbh_i_simple(a_i, gamma)
-    m_pbh = evolve_m_pbh(m_pbh_i, a_i, a)
+    m_ucmh_i = m_ucmh_i_simple(a_i, Omega_cdm_bc, a_bc)
+    m_ucmh = evolve_m_ucmh(m_ucmh_i, a_i, a)
     m_hor_i = 4*np.pi/3 * r_hor_phys(a_i)**3 * rho_tot(a_i)
-    dOmega_pbh_dm = m_pbh / m_hor_i * beta(a_i)
+    dOmega_ucmh_dm = m_ucmh / m_hor_i * beta(a_i)
     # Redshift factors to account for volume scaling
-    dOmega_pbh_dm *= (a_i / a)**3 * rho_tot(a_i) / rho_tot(a)
+    dOmega_ucmh_dm *= (a_i / a)**3 * rho_tot(a_i) / rho_tot(a)
     return m_ucmh_i, m_ucmh, dOmega_ucmh_dm / Omega_cdm_0
