@@ -43,14 +43,23 @@ ax.set_xlabel(r"Scale factor $a$")
 
 ax = axarr[1,1]
 
-zlist2 = np.logspace(-1, 10, 1000)
+zlist2 = np.logspace(-1, 15, 1000)
 
-ax.loglog(zlist2,Cosmo.M_horizon(zlist2))
+ax.loglog(zlist2, Cosmo.M_horizon(zlist2))
 
 ax.set_ylabel(r"Horizon mass $M_H$ [$M_\odot$]")
 ax.set_xlabel(r"Redshift $z$")
 
 
 #plt.subplots_adjust(hspace=0.2)
+
+
+plt.figure()
+
+plt.loglog(zlist2, Cosmo.rho_tot(zlist2))
+
+plt.ylabel(r"$\rho_tot$ [$M_\odot/\mathrm{pc}^{-3}$]")
+plt.xlabel(r"Redshift $z$")
+
 
 plt.show()

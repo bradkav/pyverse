@@ -27,7 +27,7 @@ H0 = 67.8 #(km/s)/Mpc
 H0_peryr = H0*(3.24e-20)*(60*60*24*365) #1/yr
 
 rho_crit = 4.87235e-6/37.96 #M_sun pc^-3
-
+print(rho_crit)
 Omega_L = 0.692
 Omega_m = 0.308
 Omega_r = 9.24e-5
